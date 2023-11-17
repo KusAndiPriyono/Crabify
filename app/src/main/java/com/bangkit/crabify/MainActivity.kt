@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                 zoomX.start()
                 zoomY.doOnEnd { screen.remove() }
                 zoomY.start()
+
             }
         }
         setContentView(R.layout.activity_main)
