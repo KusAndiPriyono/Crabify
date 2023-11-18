@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Crabify</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="desc_onboarding1">Deskripsi OnBoarding 1</string>
+    <string name="title_onboarding1">Selamat Datang di Crabify</string>
+    <string name="description_onboarding1">Aplikasi canggih yang akan membantu anda memantau dengan tepat kapan kepiting soka akan melakukan penggantian kulitnya , memastikan kualitas yang optimal.</string>
+    <string name="next">Next</string>
+    <string name="title_onboarding2">Tentang Aplikasi\nCrabify</string>
+    <string name="description_onboarding2">Crabify adalah aplikasi yang memahami lebih dalam perilaku kepiting soka. Kami memberikan Anda alat yang diperlukan untuk melacak dan mendeteksi tanda-tanda awal penggantian kulit. Dengan demikian, Anda dapat merawat kepiting soka dengan lebih baik.</string>
+    <string name="back">Back</string>
+    <string name="get_started">Get Started</string>
+    <string name="title_onboarding3">Ayo Mulai</string>
+    <string name="description_onboarding3">Yuk, mari mulai menjelajahi dunia kepiting soka bersama Crabify sekarang!.</string>
 </resources>
