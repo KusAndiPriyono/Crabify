@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentThirdScreenOnboardingBinding
@@ -22,7 +23,7 @@ class ThirdScreenOnboarding : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentThirdScreenOnboardingBinding.inflate(inflater, container, false)
 
         val viewPager = activity?.findViewById<ViewPager2>(R.id.view_pager_onBoarding)
@@ -30,6 +31,12 @@ class ThirdScreenOnboarding : Fragment() {
         binding.tvBack.setOnClickListener {
             viewPager?.currentItem = 1
         }
+
+        binding.btnGetStarted.setOnClickListener {
+            sendSaveAppEntryEvent()
+            findNavController().navigate(R.id.action_onBoardingFragment_to_homeActivity)
+        }
+
         return binding.root
     }
 
