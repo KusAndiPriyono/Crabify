@@ -20,7 +20,7 @@ class ImageClassifierHelper(
     var numThreads: Int = 4,
     var maxResults: Int = 3,
     var currentDelegate: Int = DELEGATE_GPU,
-    val modelName: String = "compressed_model_with_metadata.tflite",
+    val modelName: String = "compressed_model_with_metadata_v2.tflite",
     val context: Context,
     val imageClassifierListener: ClassifierListener?
 ) {
@@ -30,14 +30,6 @@ class ImageClassifierHelper(
         setupImageClassifier()
     }
 
-//    fun clearImageClassifier() {
-//        imageClassifier?.close()
-//        imageClassifier = null
-//    }
-//
-//    fun isClosed(): Boolean {
-//        return imageClassifier == null
-//    }
 
     fun setupImageClassifier() {
         val optionsBuilder = ImageClassifier.ImageClassifierOptions.builder()

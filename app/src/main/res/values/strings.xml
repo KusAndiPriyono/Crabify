@@ -20,4 +20,6 @@
     <string name="open_call_to_action">Click open to view image classification</string>
     <string name="open_file_button">Open File</string>
     <string name="results_to_be_shown_here">results_to_be_shown_here</string>
+    <string name="open_camera_button">Open Camera</string>
+    <string name="captureImage">Capture Image</string>
 </resources>

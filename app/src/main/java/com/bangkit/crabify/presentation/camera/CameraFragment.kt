@@ -1,17 +1,15 @@
 package com.bangkit.crabify.presentation.camera
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
@@ -32,10 +30,8 @@ class CameraFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var imageClassifierHelper: ImageClassifierHelper
+    private var imageCapture: ImageCapture? = null
 
-    companion object {
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,21 +44,10 @@ class CameraFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!allPermissionsGranted()) {
-            requestPermissionLauncher.launch(REQUIRED_PERMISSIONS)
-        } else {
-            startCamera()
-        }
+        takePicturePreview()
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            requireContext(),
-            it
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun startCamera() {
+    private fun takePicturePreview() {
 
         (requireActivity() as AppCompatActivity).findViewById<BottomNavigationView>(R.id.bottomNavigationView).visibility =
             View.GONE
@@ -143,20 +128,4 @@ class CameraFragment : Fragment() {
             View.VISIBLE
         _binding = null
     }
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            if (permissions[Manifest.permission.CAMERA] == true) {
-                if (!allPermissionsGranted()) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Tidak mendapatkan izin untuk kamera.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    requireActivity().finish()
-                } else {
-                    startCamera()
-                }
-            }
-        }
 }

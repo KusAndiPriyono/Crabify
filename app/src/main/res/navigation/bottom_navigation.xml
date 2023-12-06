@@ -14,11 +14,19 @@
         android:id="@+id/uploadFragment"
         android:name="com.bangkit.crabify.presentation.upload.UploadFragment"
         android:label="fragment_upload"
-        tools:layout="@layout/fragment_upload" />
+        tools:layout="@layout/fragment_upload">
+        <action
+            android:id="@+id/action_uploadFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+    </fragment>
     <fragment
         android:id="@+id/cameraFragment"
         android:name="com.bangkit.crabify.presentation.camera.CameraFragment"
         android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" />
+        tools:layout="@layout/fragment_camera">
+        <action
+            android:id="@+id/action_cameraFragment_to_uploadFragment"
+            app:destination="@id/uploadFragment" />
+    </fragment>
 
 </navigation>

@@ -21,17 +21,19 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toTopOf="@+id/call_to_action"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/top_guideline">
 
             <ImageView
-                android:id="@+id/open_file_icon"
+                android:id="@+id/iv_pick_file"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_pick_file"
                 tools:ignore="ContentDescription" />
         </androidx.cardview.widget.CardView>
@@ -44,18 +46,27 @@
             android:layout_marginBottom="8dp"
             android:text="@string/open_call_to_action"
             app:layout_constraintBottom_toTopOf="@+id/open_file"
-            app:layout_constraintLeft_toLeftOf="@+id/card_view"
-            app:layout_constraintRight_toRightOf="@+id/card_view"
+            app:layout_constraintEnd_toEndOf="@+id/card_view"
+            app:layout_constraintStart_toStartOf="@+id/card_view"
             app:layout_constraintTop_toBottomOf="@+id/card_view" />
 
         <Button
             android:id="@+id/open_file"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:text="@string/open_file_button"
             app:layout_constraintBottom_toBottomOf="@+id/bottom_guide"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/open_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:text="@string/open_camera_button"
+            app:layout_constraintBottom_toBottomOf="@+id/bottom_guide"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/bottom_guide"
@@ -76,7 +87,7 @@
             app:layout_constraintTop_toBottomOf="@+id/bottom_guide">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tv_output"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

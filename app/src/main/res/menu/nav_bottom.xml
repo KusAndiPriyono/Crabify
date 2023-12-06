@@ -15,11 +15,11 @@
         android:title="@string/upload"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/cameraFragment"
-        android:icon="@drawable/ic_camera"
-        android:title="@string/camera"
-        app:showAsAction="always" />
+<!--    <item-->
+<!--        android:id="@+id/cameraFragment"-->
+<!--        android:icon="@drawable/ic_camera"-->
+<!--        android:title="@string/camera"-->
+<!--        app:showAsAction="always" />-->
 
     <item
         android:id="@+id/fragmentProfile"
