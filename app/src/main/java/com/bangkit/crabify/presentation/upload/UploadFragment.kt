@@ -2,11 +2,11 @@ package com.bangkit.crabify.presentation.upload
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,17 +15,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentUploadBinding
 import com.bangkit.crabify.ml.CompressedModelWithMetadataV2
+import com.bangkit.crabify.utils.rotateFile
+import com.bangkit.crabify.utils.uriToFile
 import dagger.hilt.android.AndroidEntryPoint
 import org.tensorflow.lite.support.image.TensorImage
+import java.io.File
 
 @AndroidEntryPoint
 class UploadFragment : Fragment() {
+    private var getFile: File? = null
     private var _binding: FragmentUploadBinding? = null
     private val binding get() = _binding!!
 
@@ -43,11 +48,23 @@ class UploadFragment : Fragment() {
         return binding.root
     }
 
+    @Suppress("DEPRECATION")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+
+        val fileUri = arguments?.get(ARG_SELECTED_IMAGE)
+        if (fileUri != null) {
+            val uri: Uri = fileUri as Uri
+            val result = rotateFile(
+                BitmapFactory.decodeStream(
+                    requireContext().contentResolver.openInputStream(uri)
+                )
+            )
+            binding.ivPickFile.setImageBitmap(result)
         }
 
         binding.openFile.setOnClickListener {
@@ -75,13 +92,13 @@ class UploadFragment : Fragment() {
 
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.data?.let { uri ->
-                    val bitmap = BitmapFactory.decodeStream(
-                        requireContext().contentResolver.openInputStream(uri)
-                    )
-                    binding.ivPickFile.setImageBitmap(bitmap)
-                    outputGenerator(bitmap)
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                val selectedImg: Uri = result.data?.data as Uri
+                selectedImg.let { uri ->
+                    val myFile = uriToFile(uri, requireContext())
+                    getFile = myFile
+                    binding.ivPickFile.setImageURI(uri)
+                    outputGenerator(BitmapFactory.decodeFile(myFile.path))
                 }
             } else {
                 Log.e("TAG", "Gallery selection canceled")
@@ -127,6 +144,7 @@ class UploadFragment : Fragment() {
     companion object {
         private val REQUIRED_PERMISSIONS =
             arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
+        const val ARG_SELECTED_IMAGE = "selected_image"
     }
 
 }
