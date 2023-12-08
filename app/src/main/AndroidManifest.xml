@@ -20,8 +20,11 @@
         android:theme="@style/Theme.Crabify"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.auth.AuthActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.home.HomeActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

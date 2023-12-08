@@ -22,4 +22,17 @@
     <string name="results_to_be_shown_here">results_to_be_shown_here</string>
     <string name="open_camera_button">Open Camera</string>
     <string name="captureImage">Capture Image</string>
+    <string name="image_login">Image Login</string>
+    <string name="sign_in">Sign In</string>
+    <string name="copyright">Copyright @Bangkit2023</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login">Login</string>
+    <string name="or">Or</string>
+    <string name="icon_google">Icon Google</string>
+    <string name="create_account">Belum punya akun?</string>
+    <string name="register_here">Sign Up</string>
+    <string name="sign_up">Register</string>
+    <string name="full_name">Full Name</string>
 </resources>
