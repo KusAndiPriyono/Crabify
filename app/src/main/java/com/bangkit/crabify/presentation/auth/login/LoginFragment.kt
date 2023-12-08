@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentLoginBinding
 import com.bangkit.crabify.presentation.home.HomeActivity
@@ -56,6 +57,11 @@ class LoginFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
 
         binding.ivGoogle.setOnClickListener { signIn() }
+
+        binding.tvRegisterHere.setOnClickListener {
+            val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
+            findNavController().navigate(action)
+        }
     }
 
     private fun signIn() {
