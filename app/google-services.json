@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "245559464088",
+    "project_id": "crabify-capstone-407506",
+    "storage_bucket": "crabify-capstone-407506.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245559464088:android:2ba7c6359aea122b2c40ed",
+        "android_client_info": {
+          "package_name": "com.bangkit.crabify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245559464088-574s9u3ur1let1m05c499uavca1eifj4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bangkit.crabify",
+            "certificate_hash": "2771a696bdc90588e328b5c3450ce3599ef227a0"
+          }
+        },
+        {
+          "client_id": "245559464088-gtnaacdee9a0grjqd5t2jd602fkgu581.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWAoR0WFmVw07CzulXc99ChmYRS58uADw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "245559464088-gtnaacdee9a0grjqd5t2jd602fkgu581.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

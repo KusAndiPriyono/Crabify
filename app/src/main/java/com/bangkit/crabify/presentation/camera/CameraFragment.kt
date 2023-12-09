@@ -1,10 +1,6 @@
 package com.bangkit.crabify.presentation.camera
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,20 +10,16 @@ import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentCameraBinding
 import com.bangkit.crabify.ml.CompressedModelWithMetadataV2
 import com.bangkit.crabify.utils.ImageClassifierHelper
-import com.bangkit.crabify.utils.createFile
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
-import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import java.text.NumberFormat
 import java.util.concurrent.ExecutorService
@@ -60,52 +52,52 @@ class CameraFragment : Fragment() {
         imageClassifier = CompressedModelWithMetadataV2.newInstance(requireContext())
         startCamera()
 
-        binding.captureImage.setOnClickListener { takePhoto() }
+//        binding.captureImage.setOnClickListener { takePhoto() }
     }
 
-    private fun takePhoto() {
-        val imageCapture = imageCapture ?: return
-        val photoFile = createFile(requireActivity().application)
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-        imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
-                    val bundle = Bundle()
-                    bundle.putParcelable("selected_image", savedUri)
-                    // Load the captured image and classify it using ImageClassifierHelper
-                    val bitmap = BitmapFactory.decodeStream(
-                        requireActivity().contentResolver.openInputStream(savedUri)
-                    )
-                    crabifyImage(bitmap)
-                    // Navigate to the next fragment
-                    findNavController().navigate(
-                        R.id.action_cameraFragment_to_uploadFragment,
-                        bundle
-                    )
-                }
+//    private fun takePhoto() {
+//        val imageCapture = imageCapture ?: return
+//        val photoFile = createFile(requireActivity().application)
+//        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+//        imageCapture.takePicture(
+//            outputOptions,
+//            ContextCompat.getMainExecutor(requireContext()),
+//            object : ImageCapture.OnImageSavedCallback {
+//                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+//                    val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
+//                    val bundle = Bundle()
+//                    bundle.putParcelable("selected_image", savedUri)
+//                    // Load the captured image and classify it using ImageClassifierHelper
+//                    val bitmap = BitmapFactory.decodeStream(
+//                        requireActivity().contentResolver.openInputStream(savedUri)
+//                    )
+//                    crabifyImage(bitmap)
+//                    // Navigate to the next fragment
+//                    findNavController().navigate(
+//                        R.id.action_cameraFragment_to_uploadFragment,
+//                        bundle
+//                    )
+//                }
+//
+//                override fun onError(exception: ImageCaptureException) {
+//                    Toast.makeText(requireContext(), "Gagal mengambil gambar.", Toast.LENGTH_SHORT)
+//                        .show()
+//                }
+//            })
+//    }
 
-                override fun onError(exception: ImageCaptureException) {
-                    Toast.makeText(requireContext(), "Gagal mengambil gambar.", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            })
-    }
-
-    private fun crabifyImage(bitmap: Bitmap) {
-        val tfImage = TensorImage.fromBitmap(bitmap)
-        val outputs = imageClassifier.process(tfImage)
-            .probabilityAsCategoryList.apply {
-                sortByDescending { it.score }
-            }
-        val highProbabilityOutput = outputs[0]
-        Log.d(
-            TAG,
-            "outputGenerator: ${highProbabilityOutput.label} ${highProbabilityOutput.score}"
-        )
-    }
+//    private fun crabifyImage(bitmap: Bitmap) {
+//        val tfImage = TensorImage.fromBitmap(bitmap)
+//        val outputs = imageClassifier.process(tfImage)
+//            .probabilityAsCategoryList.apply {
+//                sortByDescending { it.score }
+//            }
+//        val highProbabilityOutput = outputs[0]
+//        Log.d(
+//            TAG,
+//            "outputGenerator: ${highProbabilityOutput.label} ${highProbabilityOutput.score}"
+//        )
+//    }
 
     private fun startCamera() {
 
@@ -194,7 +186,7 @@ class CameraFragment : Fragment() {
     }
 
 
-    companion object {
-        private const val TAG = "CameraFragment"
-    }
+//    companion object {
+//        private const val TAG = "CameraFragment"
+//    }
 }

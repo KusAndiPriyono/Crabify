@@ -34,7 +34,7 @@ class ThirdScreenOnboarding : Fragment() {
 
         binding.btnGetStarted.setOnClickListener {
             sendSaveAppEntryEvent()
-            findNavController().navigate(R.id.action_onBoardingFragment_to_homeActivity)
+            findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
         }
 
         return binding.root
@@ -42,5 +42,10 @@ class ThirdScreenOnboarding : Fragment() {
 
     private fun sendSaveAppEntryEvent() {
         viewModel.onEvent(OnBoardingEvent.SaveAppEntry)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
