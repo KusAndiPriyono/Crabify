@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentLoginBinding
@@ -32,8 +33,11 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: LoginViewModel by viewModels()
+
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var auth: FirebaseAuth
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +60,12 @@ class LoginFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance()
 
+        binding.btnLogin.setOnClickListener {
+            val email = binding.etEmail.text.toString()
+            val password = binding.etPassword.text.toString()
+            viewModel.loginWithEmailAndPassword(email, password)
+        }
+
         binding.ivGoogle.setOnClickListener { signIn() }
 
         binding.tvRegisterHere.setOnClickListener {
@@ -67,7 +77,6 @@ class LoginFragment : Fragment() {
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         resultLauncher.launch(signInIntent)
-
     }
 
     private var resultLauncher: ActivityResultLauncher<Intent> =
