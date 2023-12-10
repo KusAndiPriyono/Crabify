@@ -44,11 +44,8 @@ class UploadFragment : Fragment() {
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (isGranted) {
-                showNotification()
-            } else {
-                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
-            }
+            val message = if (isGranted) "Permission granted" else "Permission denied"
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
 
     override fun onCreateView(
@@ -65,7 +62,6 @@ class UploadFragment : Fragment() {
 
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-            requestPermissionLauncher.launch(Manifest.permission.VIBRATE)
         }
 
         val fileUri = arguments?.get(ARG_SELECTED_IMAGE)
@@ -152,38 +148,55 @@ class UploadFragment : Fragment() {
 
     @SuppressLint("WrongConstant")
     private fun showNotification() {
-        val channelId = "notification_channel_id"
-        val notificationBuilder = NotificationCompat.Builder(requireContext(), channelId)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Kepiting sudah molting")
-            .setContentText("The score is greater than or equal to 0.80!")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.VIBRATE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
 
-        // Intent untuk membuka NotificationActivity
-        val intent = Intent(requireContext(), NotificationActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(
-            requireContext(),
-            0,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+            val channelId = "your_notification_channel_id"
+            val notificationBuilder = NotificationCompat.Builder(requireContext(), channelId)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("Kepiting sudah molting")
+                .setContentText("The score is greater than or equal to 0.80!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        notificationBuilder.setContentIntent(pendingIntent)
-        notificationBuilder.setAutoCancel(true)
+            // Intent untuk membuka NotificationActivity
+            val intent = Intent(requireContext(), NotificationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            val pendingIntent = PendingIntent.getActivity(
+                requireContext(),
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(channelId)
+            notificationBuilder.setContentIntent(pendingIntent)
+            notificationBuilder.setAutoCancel(true)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val name = "Notification Channel"
+                val descriptionText = "Channel for notifications"
+                val importance = NotificationManagerCompat.IMPORTANCE_DEFAULT
+                val channel = NotificationChannel(channelId, name, importance).apply {
+                    description = descriptionText
+                }
+
+                val notificationManager =
+                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.createNotificationChannel(channel)
+            }
+
+            with(NotificationManagerCompat.from(requireContext())) {
+                notify(notificationId, notificationBuilder.build())
+            }
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.VIBRATE)
         }
-
-        val notificationManager =
-            requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
     @SuppressLint("WrongConstant")
-    private fun createNotificationChannel(channelId: String) {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Notification Channel"
             val descriptionText = "Channel for notifications"
@@ -198,6 +211,7 @@ class UploadFragment : Fragment() {
         }
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -206,12 +220,9 @@ class UploadFragment : Fragment() {
     companion object {
         private const val channelId = "notification_channel_id"
         private const val notificationId = 1
-        private val REQUIRED_PERMISSIONS = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.VIBRATE
-        )
-
+        private val REQUIRED_PERMISSIONS =
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
         const val ARG_SELECTED_IMAGE = "selected_image"
     }
+
 }
