@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentSecondScreenOnboardingBinding
-import com.bangkit.crabify.presentation.onBoarding.OnBoardingEvent
 import com.bangkit.crabify.presentation.onBoarding.OnBoardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,27 +17,27 @@ class SecondScreenOnboarding : Fragment() {
 
     private var _binding: FragmentSecondScreenOnboardingBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<OnBoardingViewModel>()
+
+    private val viewModel: OnBoardingViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentSecondScreenOnboardingBinding.inflate(inflater, container, false)
         val viewPager = activity?.findViewById<ViewPager2>(R.id.view_pager_onBoarding)
         binding.btnNext.setOnClickListener {
-            sendSaveAppEntryEvent()
-            viewPager?.currentItem = 2
+            viewModel.getSession { user ->
+                if (user != null) {
+                    viewPager?.currentItem = 1
+                } else {
+                    viewPager?.currentItem = 2
+                }
+            }
         }
         binding.tvBack.setOnClickListener {
             viewPager?.currentItem = 0
         }
         return binding.root
     }
-
-    private fun sendSaveAppEntryEvent() {
-        viewModel.onEvent(OnBoardingEvent.SaveAppEntry)
-    }
-
-
 }

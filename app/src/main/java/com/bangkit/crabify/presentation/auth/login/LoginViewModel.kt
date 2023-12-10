@@ -1,37 +1,35 @@
 package com.bangkit.crabify.presentation.auth.login
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.launch
+import com.bangkit.crabify.data.model.User
+import com.bangkit.crabify.domain.repository.AuthRepository
+import com.bangkit.crabify.utils.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+@HiltViewModel
+class LoginViewModel @Inject constructor(private val repository: AuthRepository) : ViewModel() {
 
-//    val loadingState = MutableStateFlow(LoadingState.IDLE)
+    private val _login = MutableLiveData<UiState<String>>()
+    val login: LiveData<UiState<String>>
+        get() = _login
 
-    private val auth: FirebaseAuth = Firebase.auth
-
-    private val _loading = MutableLiveData(false)
-    val loading: LiveData<Boolean> = _loading
-
-    fun loginWithEmailAndPassword(email: String, password: String) = viewModelScope.launch {
-        try {
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d("LoginViewModel", "loginWithEmailAndPassword: ${task.result}")
-                    } else {
-                        Log.d("LoginViewModel", "loginWithEmailAndPassword: ${task.result}")
-                    }
-                }
-        } catch (e: Exception) {
-            Log.d("LoginViewModel", "loginWithEmailAndPassword: ${e.message}")
+    fun login(email: String, password: String) {
+        _login.value = UiState.Loading
+        repository.loginUser(email, password) {
+            _login.value = it
         }
     }
+
+    fun logout(result: () -> Unit) {
+        repository.logout(result)
+    }
+
+    fun getSession(result: (User?) -> Unit) {
+        repository.getSession(result)
+    }
+
 
 }

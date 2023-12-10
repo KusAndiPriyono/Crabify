@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentThirdScreenOnboardingBinding
-import com.bangkit.crabify.presentation.onBoarding.OnBoardingEvent
 import com.bangkit.crabify.presentation.onBoarding.OnBoardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,7 +18,8 @@ class ThirdScreenOnboarding : Fragment() {
 
     private var _binding: FragmentThirdScreenOnboardingBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<OnBoardingViewModel>()
+
+    private val viewModel: OnBoardingViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,19 +33,14 @@ class ThirdScreenOnboarding : Fragment() {
         }
 
         binding.btnGetStarted.setOnClickListener {
-            sendSaveAppEntryEvent()
-            findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
+            viewModel.getSession { user ->
+                if (user != null) {
+                    viewPager?.currentItem = 2
+                } else {
+                    findNavController().navigate(R.id.action_onBoardingFragment_to_loginFragment)
+                }
+            }
         }
-
         return binding.root
-    }
-
-    private fun sendSaveAppEntryEvent() {
-        viewModel.onEvent(OnBoardingEvent.SaveAppEntry)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 }

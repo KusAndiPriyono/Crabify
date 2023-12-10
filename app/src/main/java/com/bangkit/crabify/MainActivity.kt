@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -18,9 +19,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
-//            setKeepOnScreenCondition {
-//                !viewModel.isCrabifyAppStarted.value
-//            }
+            setKeepOnScreenCondition {
+                viewModel.isCrabifyAppStarted.value
+            }
             setOnExitAnimationListener { screen ->
                 val zoomX = ObjectAnimator.ofFloat(
                     screen.iconView,
@@ -39,13 +40,28 @@ class MainActivity : AppCompatActivity() {
                 zoomY.interpolator = OvershootInterpolator()
                 zoomX.duration = 500
                 zoomY.duration = 500
-                zoomX.doOnEnd { screen.remove() }
+                zoomX.doOnEnd {
+                    screen.remove()
+                    checkSession()
+                }
                 zoomX.start()
-                zoomY.doOnEnd { screen.remove() }
+                zoomY.doOnEnd {
+                    screen.remove()
+                    checkSession()
+                }
                 zoomY.start()
-
             }
         }
         setContentView(R.layout.activity_main)
+    }
+
+    private fun checkSession() {
+        viewModel.getSession { user ->
+            if (user != null) {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.action_onBoardingFragment_to_homeActivity)
+            } else {
+                findNavController(R.id.nav_host_fragment)
+            }
+        }
     }
 }

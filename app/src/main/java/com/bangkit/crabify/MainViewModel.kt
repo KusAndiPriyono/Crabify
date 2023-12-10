@@ -1,17 +1,16 @@
 package com.bangkit.crabify
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.bangkit.crabify.domain.useCases.app_entry.StartCrabifyAppEntry
+import com.bangkit.crabify.data.model.User
+import com.bangkit.crabify.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val startCrabifyAppEntry: StartCrabifyAppEntry) :
+class MainViewModel @Inject constructor(private val repository: AuthRepository) :
     ViewModel() {
 
     private val _isCrabifyAppStarted = MutableStateFlow(true)
@@ -22,12 +21,12 @@ class MainViewModel @Inject constructor(private val startCrabifyAppEntry: StartC
     }
 
     private fun startAppEntry() {
-        viewModelScope.launch {
-            startCrabifyAppEntry().collect { isStarted ->
-                _isCrabifyAppStarted.value = isStarted
-            }
-            delay(3000)
-            _isCrabifyAppStarted.value = false
+        repository.getSession { user ->
+            _isCrabifyAppStarted.value = user != null
         }
+        _isCrabifyAppStarted.value = false
     }
+
+    fun getSession(result: (User?) -> Unit) = repository.getSession(result)
+
 }

@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -14,7 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentLoginBinding
-import com.bangkit.crabify.presentation.home.HomeActivity
+import com.bangkit.crabify.utils.UiState
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -55,23 +57,76 @@ class LoginFragment : Fragment() {
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-
         auth = FirebaseAuth.getInstance()
 
         binding.btnLogin.setOnClickListener {
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
-            viewModel.loginWithEmailAndPassword(email, password)
+            if (validation()) {
+                viewModel.login(
+                    binding.etEmail.text.toString(),
+                    binding.etPassword.text.toString()
+                )
+            }
         }
-
         binding.ivGoogle.setOnClickListener { signIn() }
-
         binding.tvRegisterHere.setOnClickListener {
             val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
             findNavController().navigate(action)
         }
+
+        viewModel.login.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    binding.btnLogin.text = ""
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+
+                is UiState.Error -> {
+                    binding.btnLogin.text = getString(R.string.login)
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                }
+
+                is UiState.Success -> {
+                    binding.btnLogin.text = getString(R.string.login)
+                    binding.progressBar.visibility = View.GONE
+                    val action = LoginFragmentDirections.actionLoginFragmentToHomeActivity()
+                    findNavController().navigate(action)
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun validation(): Boolean {
+        var isValid = true
+        if (binding.etEmail.text.isNullOrEmpty()) {
+            isValid = false
+            Toast.makeText(requireContext(), "Enter email address", Toast.LENGTH_SHORT).show()
+        } else {
+            if (binding.etEmail.text.toString()
+                    .isEmpty() && Patterns.EMAIL_ADDRESS.matcher(binding.etEmail.text.toString())
+                    .matches()
+            ) {
+                isValid = false
+                Toast.makeText(requireContext(), "Email must be valid", Toast.LENGTH_SHORT).show()
+            }
+        }
+        if (binding.etPassword.text.isNullOrEmpty()) {
+            isValid = false
+            Toast.makeText(requireContext(), "Enter password", Toast.LENGTH_SHORT).show()
+        } else {
+            if (binding.etPassword.text.toString().length < 6) {
+                isValid = false
+                Toast.makeText(
+                    requireContext(),
+                    "Password must be at least 6 characters",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        return isValid
     }
 
     private fun signIn() {
@@ -111,13 +166,19 @@ class LoginFragment : Fragment() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null) {
-            startActivity(Intent(requireActivity(), HomeActivity::class.java))
-            requireActivity().finish()
+            val action = LoginFragmentDirections.actionLoginFragmentToHomeActivity()
+            findNavController().navigate(action)
         }
     }
 
     override fun onStart() {
         super.onStart()
+        viewModel.getSession { user ->
+            if (user != null) {
+                val action = LoginFragmentDirections.actionLoginFragmentToHomeActivity()
+                findNavController().navigate(action)
+            }
+        }
         val currentUser = auth.currentUser
         updateUI(currentUser)
     }
