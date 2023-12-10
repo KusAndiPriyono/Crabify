@@ -1,12 +1,6 @@
 package com.bangkit.crabify.di
 
-import android.app.Application
-import com.bangkit.crabify.R
-import com.bangkit.crabify.utils.FirebaseRequest.SIGN_IN_REQUEST
 import com.bangkit.crabify.utils.FirebaseStorageConstants
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -15,7 +9,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -34,36 +27,36 @@ object FirebaseModule {
         return FirebaseFirestore.getInstance()
     }
 
-    @Singleton
-    @Provides
-    @Named(SIGN_IN_REQUEST)
-    fun provideSignInRequest(app: Application) =
-        BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setServerClientId(app.getString(R.string.default_web_client_id))
-                    .setFilterByAuthorizedAccounts(true)
-                    .build()
-            )
-            .setAutoSelectEnabled(true)
-            .build()
+//    @Singleton
+//    @Provides
+//    @Named(SIGN_IN_REQUEST)
+//    fun provideSignInRequest(app: Application) =
+//        BeginSignInRequest.builder()
+//            .setGoogleIdTokenRequestOptions(
+//                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+//                    .setSupported(true)
+//                    .setServerClientId(app.getString(R.string.default_web_client_id))
+//                    .setFilterByAuthorizedAccounts(true)
+//                    .build()
+//            )
+//            .setAutoSelectEnabled(true)
+//            .build()
 
-    @Singleton
-    @Provides
-    fun provideGoogleSignInOptions(
-        app: Application
-    ) = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(app.getString(R.string.default_web_client_id))
-        .requestEmail()
-        .build()
+//    @Singleton
+//    @Provides
+//    fun provideGoogleSignInOptions(
+//        app: Application
+//    ) = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//        .requestIdToken(app.getString(R.string.default_web_client_id))
+//        .requestEmail()
+//        .build()
 
-    @Singleton
-    @Provides
-    fun provideGoogleSignInClient(
-        app: Application,
-        options: GoogleSignInOptions
-    ) = GoogleSignIn.getClient(app, options)
+//    @Singleton
+//    @Provides
+//    fun provideGoogleSignInClient(
+//        app: Application,
+//        options: GoogleSignInOptions
+//    ) = GoogleSignIn.getClient(app, options)
 
 
     @Singleton

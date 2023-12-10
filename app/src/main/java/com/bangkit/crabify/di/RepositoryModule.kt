@@ -20,8 +20,6 @@ object RepositoryModule {
     fun provideAuthRepository(
         database: FirebaseFirestore,
         auth: FirebaseAuth,
-//        @Named(SIGN_IN_REQUEST)
-//        signInRequest: BeginSignInRequest,
         appPreferences: SharedPreferences,
 //        gson: Gson
     ): AuthRepository {

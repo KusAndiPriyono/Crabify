@@ -3,9 +3,23 @@
     <style name="Theme.Crabify" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!--        <item name="colorPrimaryVariant">@color/splash</item>-->
+        <item name="android:statusBarColor">@color/splash</item>
     </style>
 
     <!--    <style name="Theme.Crabify" parent="Base.Theme.Crabify" />-->
+
+    <style name="CustomCardCorners" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance_custom_corners</item>
+    </style>
+
+    <style name="ShapeAppearance_custom_corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">50dp</item>
+        <item name="cornerSizeBottomRight">50dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+    </style>
 
 
 </resources>

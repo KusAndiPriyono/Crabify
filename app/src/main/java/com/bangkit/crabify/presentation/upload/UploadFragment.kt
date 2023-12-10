@@ -64,6 +64,8 @@ class UploadFragment : Fragment() {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
 
+        createNotificationChannel()
+
         val fileUri = arguments?.get(ARG_SELECTED_IMAGE)
         if (fileUri != null) {
             val uri: Uri = fileUri as Uri
@@ -134,7 +136,8 @@ class UploadFragment : Fragment() {
 //            "${highProbabilityOutput.label}\nScore: ${highProbabilityOutput.score}"
 //        }
 
-        val resultText = "${highProbabilityOutput.label}\nScore: ${(highProbabilityOutput.score * 100).toInt()}%"
+        val resultText =
+            "${highProbabilityOutput.label}\nScore: ${(highProbabilityOutput.score * 100).toInt()}%"
         binding.tvOutput.text = resultText
         Log.d(
             "TAG",
@@ -154,7 +157,7 @@ class UploadFragment : Fragment() {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
 
-            val channelId = "your_notification_channel_id"
+//            val channelId = "your_notification_channel_id"
             val notificationBuilder = NotificationCompat.Builder(requireContext(), channelId)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("Kepiting sudah molting")
@@ -174,18 +177,19 @@ class UploadFragment : Fragment() {
             notificationBuilder.setContentIntent(pendingIntent)
             notificationBuilder.setAutoCancel(true)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name = "Notification Channel"
-                val descriptionText = "Channel for notifications"
-                val importance = NotificationManagerCompat.IMPORTANCE_DEFAULT
-                val channel = NotificationChannel(channelId, name, importance).apply {
-                    description = descriptionText
-                }
-
-                val notificationManager =
-                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                val name = "Notification Channel"
+//                val descriptionText = "Channel for notifications"
+//                val importance = NotificationManagerCompat.IMPORTANCE_DEFAULT
+//                val channel = NotificationChannel(channelId, name, importance).apply {
+//                    description = descriptionText
+//                    setAllowBubbles(true)
+//                }
+//
+//                val notificationManager =
+//                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//                notificationManager.createNotificationChannel(channel)
+//            }
 
             with(NotificationManagerCompat.from(requireContext())) {
                 notify(notificationId, notificationBuilder.build())
@@ -218,8 +222,8 @@ class UploadFragment : Fragment() {
     }
 
     companion object {
-        private const val channelId = "notification_channel_id"
-        private const val notificationId = 1
+        const val channelId = "notification_channel_id"
+        const val notificationId = 1
         private val REQUIRED_PERMISSIONS =
             arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
         const val ARG_SELECTED_IMAGE = "selected_image"

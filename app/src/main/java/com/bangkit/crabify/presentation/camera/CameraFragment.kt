@@ -1,5 +1,10 @@
 package com.bangkit.crabify.presentation.camera
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.PendingIntent
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +17,16 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bangkit.crabify.R
 import com.bangkit.crabify.databinding.FragmentCameraBinding
 import com.bangkit.crabify.ml.CompressedModelWithMetadataV2
+import com.bangkit.crabify.presentation.notification.NotificationActivity
+import com.bangkit.crabify.presentation.upload.UploadFragment
+import com.bangkit.crabify.presentation.upload.UploadFragment.Companion.channelId
 import com.bangkit.crabify.utils.ImageClassifierHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -120,6 +130,10 @@ class CameraFragment : Fragment() {
                                 println(it)
                                 val sortedCategories =
                                     it[0].categories.sortedByDescending { it?.score }
+                                val highestProbability = sortedCategories[0]
+                                if (highestProbability.label == "kepiting soka" && highestProbability.score >= 0.80) {
+                                    showNotification()
+                                }
                                 val displayResult =
                                     sortedCategories.joinToString("\n") {
                                         "${it.label} " + NumberFormat.getPercentInstance()
@@ -177,6 +191,54 @@ class CameraFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    @SuppressLint("WrongConstant")
+    private fun showNotification() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.VIBRATE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+
+//            val channelId = "your_notification_channel_id"
+            val notificationBuilder = NotificationCompat.Builder(requireContext(), channelId)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("Kepiting sudah molting")
+                .setContentText("The score is greater than or equal to 0.80!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+            // Intent untuk membuka NotificationActivity
+            val intent = Intent(requireContext(), NotificationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            val pendingIntent = PendingIntent.getActivity(
+                requireContext(),
+                0,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            notificationBuilder.setContentIntent(pendingIntent)
+            notificationBuilder.setAutoCancel(true)
+
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//                val name = "Notification Channel"
+//                val descriptionText = "Channel for notifications"
+//                val importance = NotificationManagerCompat.IMPORTANCE_DEFAULT
+//                val channel = NotificationChannel(channelId, name, importance).apply {
+//                    description = descriptionText
+//                    setAllowBubbles(true)
+//                }
+//
+//                val notificationManager =
+//                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//                notificationManager.createNotificationChannel(channel)
+//            }
+
+            with(NotificationManagerCompat.from(requireContext())) {
+                notify(UploadFragment.notificationId, notificationBuilder.build())
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         (requireActivity() as AppCompatActivity).findViewById<BottomNavigationView>(R.id.bottomNavigationView).visibility =
@@ -186,7 +248,7 @@ class CameraFragment : Fragment() {
     }
 
 
-//    companion object {
-//        private const val TAG = "CameraFragment"
-//    }
+    companion object {
+        private const val TAG = "CameraFragment"
+    }
 }

@@ -37,4 +37,7 @@
     <string name="full_name">Full Name</string>
     <string name="default_web_client_id">245559464088-gtnaacdee9a0grjqd5t2jd602fkgu581.apps.googleusercontent.com</string>
     <string name="Logout">Logout</string>
+    <string name="username">User Name</string>
+    <string name="photo_profile">Foto Profil</string>
+    <string name="email_settings">andipriyono94@gmail.com</string>
 </resources>

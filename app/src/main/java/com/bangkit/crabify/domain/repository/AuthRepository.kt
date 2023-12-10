@@ -7,10 +7,10 @@ import com.google.firebase.auth.AuthCredential
 interface AuthRepository {
     fun loginUser(email: String, password: String, result: (UiState<String>) -> Unit)
 
-    fun firebaseSignInWithGoogle(
-        googleCredential: AuthCredential,
-        result: (UiState<String>) -> Unit
-    )
+//    fun firebaseSignInWithGoogle(
+//        googleCredential: AuthCredential,
+//        result: (UiState<String>) -> Unit
+//    )
 
     fun registerUser(
         fullName: String,

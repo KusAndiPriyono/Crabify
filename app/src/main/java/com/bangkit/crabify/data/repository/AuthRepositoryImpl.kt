@@ -6,7 +6,6 @@ import com.bangkit.crabify.domain.repository.AuthRepository
 import com.bangkit.crabify.utils.FireStoreCollections.USER
 import com.bangkit.crabify.utils.SharedPrefConstants
 import com.bangkit.crabify.utils.UiState
-import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -18,8 +17,6 @@ import javax.inject.Singleton
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
     private val database: FirebaseFirestore, private val auth: FirebaseAuth,
-//    @Named(SIGN_IN_REQUEST)
-//    private val signInRequest: BeginSignInRequest,
     private val appPreferences: SharedPreferences,
 //    private val gson: Gson
 ) : AuthRepository {
@@ -40,39 +37,39 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun firebaseSignInWithGoogle(
-        googleCredential: AuthCredential, result: (UiState<String>) -> Unit
-    ) {
-        auth.signInWithCredential(googleCredential).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val isNewUser = task.result?.additionalUserInfo?.isNewUser ?: false
-                if (isNewUser) {
-                    val user = auth.currentUser
-                    if (user != null) {
-                        val newUser = User(
-                            id = user.uid,
-                            fullName = user.displayName.toString(),
-                            email = user.email.toString(),
-                        )
-                        database.collection(USER).document(user.uid).set(newUser)
-                            .addOnSuccessListener {
-                                storeSession(id = user.uid) {
-                                    if (it == null) {
-                                        result.invoke(UiState.Error("Failed to store local session"))
-                                    } else {
-                                        result.invoke(UiState.Success("Login Success"))
-                                    }
-                                }
-                            }.addOnFailureListener {
-                                result.invoke(UiState.Error(it.message.toString()))
-                            }
-                    }
-                }
-            }
-        }.addOnFailureListener {
-            result.invoke(UiState.Error(it.message.toString()))
-        }
-    }
+//    override fun firebaseSignInWithGoogle(
+//        googleCredential: AuthCredential, result: (UiState<String>) -> Unit
+//    ) {
+//        auth.signInWithCredential(googleCredential).addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                val isNewUser = task.result?.additionalUserInfo?.isNewUser ?: false
+//                if (isNewUser) {
+//                    val user = auth.currentUser
+//                    if (user != null) {
+//                        val newUser = User(
+//                            id = user.uid,
+//                            fullName = user.displayName.toString(),
+//                            email = user.email.toString(),
+//                        )
+//                        database.collection(USER).document(user.uid).set(newUser)
+//                            .addOnSuccessListener {
+//                                storeSession(id = user.uid) {
+//                                    if (it == null) {
+//                                        result.invoke(UiState.Error("Failed to store local session"))
+//                                    } else {
+//                                        result.invoke(UiState.Success("Login Success"))
+//                                    }
+//                                }
+//                            }.addOnFailureListener {
+//                                result.invoke(UiState.Error(it.message.toString()))
+//                            }
+//                    }
+//                }
+//            }
+//        }.addOnFailureListener {
+//            result.invoke(UiState.Error(it.message.toString()))
+//        }
+//    }
 
 
     override fun registerUser(

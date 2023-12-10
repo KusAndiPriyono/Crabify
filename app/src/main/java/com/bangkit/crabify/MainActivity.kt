@@ -59,6 +59,9 @@ class MainActivity : AppCompatActivity() {
         viewModel.getSession { user ->
             if (user != null) {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.action_onBoardingFragment_to_homeActivity)
+//                val intent = Intent(this, HomeActivity::class.java)
+//                startActivity(intent)
+//                finish()
             } else {
                 findNavController(R.id.nav_host_fragment)
             }

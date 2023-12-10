@@ -30,6 +30,4 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
     fun getSession(result: (User?) -> Unit) {
         repository.getSession(result)
     }
-
-
 }
