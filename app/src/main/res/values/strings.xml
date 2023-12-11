@@ -40,4 +40,8 @@
     <string name="username">User Name</string>
     <string name="photo_profile">Foto Profil</string>
     <string name="email_settings">andipriyono94@gmail.com</string>
+    <string name="reset_password">Reset Your Password</string>
+    <string name="reset_password_description">Please enter the email address you\'d like your password reset information sent to</string>
+    <string name="email_address">Enter Email Address</string>
+    <string name="send">Reset Password</string>
 </resources>

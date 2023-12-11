@@ -70,8 +70,11 @@ class LoginFragment : Fragment() {
         }
         binding.ivGoogle.setOnClickListener { signIn() }
         binding.tvRegisterHere.setOnClickListener {
-            val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+
+        binding.tvForgotPassword.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_forgotPassword)
         }
 
         viewModel.login.observe(viewLifecycleOwner) { state ->
