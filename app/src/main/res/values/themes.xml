@@ -9,6 +9,7 @@
 
     <!--    <style name="Theme.Crabify" parent="Base.Theme.Crabify" />-->
 
+    <!--    Card View Settings-->
     <style name="CustomCardCorners" parent="Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance_custom_corners</item>
     </style>
@@ -17,6 +18,19 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeBottomLeft">50dp</item>
         <item name="cornerSizeBottomRight">50dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+    </style>
+
+    <!--    Card View Home-->
+    <style name="CustomCardCornersHome" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance_custom_corners_home</item>
+    </style>
+
+    <style name="ShapeAppearance_custom_corners_home" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">150dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeTopLeft">0dp</item>
         <item name="cornerSizeTopRight">0dp</item>
     </style>

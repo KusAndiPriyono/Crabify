@@ -15,8 +15,7 @@
     <string name="upload">Upload</string>
     <string name="camera">Camera</string>
     <string name="settings">Settings</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="open_call_to_action">Click open to view image classification</string>
     <string name="open_file_button">Open File</string>
     <string name="results_to_be_shown_here">results_to_be_shown_here</string>
@@ -44,4 +43,23 @@
     <string name="reset_password_description">Please enter the email address you\'d like your password reset information sent to</string>
     <string name="email_address">Enter Email Address</string>
     <string name="send">Reset Password</string>
+    <string name="statistic">Statistic</string>
+    <string name="halaman_upload"><![CDATA["Detection Crab "]]></string>
+    <string name="description_upload">Anda bisa melihat hasilnya dengan mengunggah berkas atau menggunakan kamera untuk deteksi langsung.</string>
+    <string name="result">Result</string>
+    <string name="classification">Classification</string>
+    <string name="generate">Generate</string>
+    <string name="welcome">Selamat Pagi,</string>
+    <string name="date">Senin, 22 Desember 2023</string>
+    <string name="menu_home">Menu Pintas</string>
+    <string name="list">List</string>
+    <string name="sensor_tempertaure">Temperature</string>
+    <string name="in_unit">in Unit</string>
+    <string name="temperature_unit">90\u2103</string>
+    <string name="switchcompat">Switch Compat</string>
+    <string name="available_sensor">Available Sensor</string>
+    <string name="analysis">Analisis</string>
+    <string name="schedule">Schedule</string>
+    <string name="label">Label :</string>
+    <string name="score">Score :</string>
 </resources>

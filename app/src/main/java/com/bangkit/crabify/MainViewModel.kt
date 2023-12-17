@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.bangkit.crabify.data.model.User
 import com.bangkit.crabify.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -27,6 +26,8 @@ class MainViewModel @Inject constructor(private val repository: AuthRepository) 
         _isCrabifyAppStarted.value = false
     }
 
-    fun getSession(result: (User?) -> Unit) = repository.getSession(result)
+    fun getSession(result: (User?) -> Unit) {
+        repository.getSession(result)
+    }
 
 }

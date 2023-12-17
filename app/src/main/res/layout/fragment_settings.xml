@@ -27,7 +27,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="40dp"
                 android:contentDescription="@string/photo_profile"
                 android:src="@drawable/ic_person_24"
                 app:layout_constraintCircleRadius="50dp"

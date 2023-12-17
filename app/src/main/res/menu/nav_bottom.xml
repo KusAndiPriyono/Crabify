@@ -12,7 +12,7 @@
     <item
         android:id="@+id/uploadFragment"
         android:icon="@drawable/ic_upload"
-        android:title="@string/upload"
+        android:title="@string/classification"
         app:showAsAction="always" />
 
     <!--    <item-->

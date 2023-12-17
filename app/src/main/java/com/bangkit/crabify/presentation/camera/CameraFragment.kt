@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,19 +15,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bangkit.crabify.R
+import com.bangkit.crabify.data.model.Crab
 import com.bangkit.crabify.databinding.FragmentCameraBinding
 import com.bangkit.crabify.ml.CompressedModelWithMetadataV2
 import com.bangkit.crabify.presentation.notification.NotificationActivity
-import com.bangkit.crabify.presentation.upload.UploadFragment
-import com.bangkit.crabify.presentation.upload.UploadFragment.Companion.channelId
+import com.bangkit.crabify.presentation.upload.ClassificationFragment
+import com.bangkit.crabify.presentation.upload.ClassificationFragment.Companion.channelId
+import com.bangkit.crabify.presentation.upload.ClassificationViewModel
 import com.bangkit.crabify.utils.ImageClassifierHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,11 +43,12 @@ class CameraFragment : Fragment() {
 
     private var _binding: FragmentCameraBinding? = null
     private val binding get() = _binding!!
+    private val classificationViewModel: ClassificationViewModel by viewModels()
 
     private lateinit var cameraExecutor: ExecutorService
-    private var imageCapture: ImageCapture? = null
     private lateinit var imageClassifier: CompressedModelWithMetadataV2
     private lateinit var imageClassifierHelper: ImageClassifierHelper
+    private var imageUri: Uri? = null
 
 
     override fun onCreateView(
@@ -61,53 +65,7 @@ class CameraFragment : Fragment() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         imageClassifier = CompressedModelWithMetadataV2.newInstance(requireContext())
         startCamera()
-
-//        binding.captureImage.setOnClickListener { takePhoto() }
     }
-
-//    private fun takePhoto() {
-//        val imageCapture = imageCapture ?: return
-//        val photoFile = createFile(requireActivity().application)
-//        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-//        imageCapture.takePicture(
-//            outputOptions,
-//            ContextCompat.getMainExecutor(requireContext()),
-//            object : ImageCapture.OnImageSavedCallback {
-//                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-//                    val savedUri = outputFileResults.savedUri ?: Uri.fromFile(photoFile)
-//                    val bundle = Bundle()
-//                    bundle.putParcelable("selected_image", savedUri)
-//                    // Load the captured image and classify it using ImageClassifierHelper
-//                    val bitmap = BitmapFactory.decodeStream(
-//                        requireActivity().contentResolver.openInputStream(savedUri)
-//                    )
-//                    crabifyImage(bitmap)
-//                    // Navigate to the next fragment
-//                    findNavController().navigate(
-//                        R.id.action_cameraFragment_to_uploadFragment,
-//                        bundle
-//                    )
-//                }
-//
-//                override fun onError(exception: ImageCaptureException) {
-//                    Toast.makeText(requireContext(), "Gagal mengambil gambar.", Toast.LENGTH_SHORT)
-//                        .show()
-//                }
-//            })
-//    }
-
-//    private fun crabifyImage(bitmap: Bitmap) {
-//        val tfImage = TensorImage.fromBitmap(bitmap)
-//        val outputs = imageClassifier.process(tfImage)
-//            .probabilityAsCategoryList.apply {
-//                sortByDescending { it.score }
-//            }
-//        val highProbabilityOutput = outputs[0]
-//        Log.d(
-//            TAG,
-//            "outputGenerator: ${highProbabilityOutput.label} ${highProbabilityOutput.score}"
-//        )
-//    }
 
     private fun startCamera() {
 
@@ -132,6 +90,11 @@ class CameraFragment : Fragment() {
                                     it[0].categories.sortedByDescending { it?.score }
                                 val highestProbability = sortedCategories[0]
                                 if (highestProbability.label == "kepiting soka" && highestProbability.score >= 0.80) {
+                                    val crab = Crab(
+                                        label = arrayListOf(highestProbability.label),
+                                        score = arrayListOf(highestProbability.score),
+                                    )
+                                    classificationViewModel.addCrab(crab)
                                     showNotification()
                                 }
                                 val displayResult =
@@ -159,8 +122,6 @@ class CameraFragment : Fragment() {
                     it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                 }
 
-            imageCapture = ImageCapture.Builder().build()
-
             @Suppress("DEPRECATION") val imageAnalyzer =
                 ImageAnalysis.Builder()
                     .setTargetAspectRatio(AspectRatio.RATIO_4_3)
@@ -182,7 +143,6 @@ class CameraFragment : Fragment() {
                     CameraSelector.DEFAULT_BACK_CAMERA,
                     preview,
                     imageAnalyzer,
-                    imageCapture
                 )
             } catch (exc: Exception) {
                 Toast.makeText(requireContext(), "Gagal memunculkan kamera.", Toast.LENGTH_SHORT)
@@ -219,22 +179,8 @@ class CameraFragment : Fragment() {
             notificationBuilder.setContentIntent(pendingIntent)
             notificationBuilder.setAutoCancel(true)
 
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                val name = "Notification Channel"
-//                val descriptionText = "Channel for notifications"
-//                val importance = NotificationManagerCompat.IMPORTANCE_DEFAULT
-//                val channel = NotificationChannel(channelId, name, importance).apply {
-//                    description = descriptionText
-//                    setAllowBubbles(true)
-//                }
-//
-//                val notificationManager =
-//                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//                notificationManager.createNotificationChannel(channel)
-//            }
-
             with(NotificationManagerCompat.from(requireContext())) {
-                notify(UploadFragment.notificationId, notificationBuilder.build())
+                notify(ClassificationFragment.notificationId, notificationBuilder.build())
             }
         }
     }
@@ -246,8 +192,7 @@ class CameraFragment : Fragment() {
         _binding = null
         cameraExecutor.shutdown()
     }
-
-
+    
     companion object {
         private const val TAG = "CameraFragment"
     }

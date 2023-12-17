@@ -11,20 +11,22 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val database: FirebaseFirestore, private val auth: FirebaseAuth,
+    private val database: FirebaseFirestore,
+    private val auth: FirebaseAuth,
     private val appPreferences: SharedPreferences,
-//    private val gson: Gson
+    private val gson: Gson
 ) : AuthRepository {
 
     override fun loginUser(email: String, password: String, result: (UiState<String>) -> Unit) {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                storeSession(id = task.result?.user?.uid ?: "") {
+                storeSession(id = task.result.user?.uid ?: "") {
                     if (it == null) {
                         result.invoke(UiState.Error("Failed to store local session"))
                     } else {
@@ -81,11 +83,11 @@ class AuthRepositoryImpl @Inject constructor(
     ) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
             if (it.isSuccessful) {
-                user.id = it.result?.user?.uid.toString()
+                user.id = it.result.user?.uid.toString()
                 updateProfile(user) { state ->
                     when (state) {
                         is UiState.Success -> {
-                            storeSession(id = it.result?.user?.uid ?: "") {
+                            storeSession(id = it.result.user?.uid ?: "") {
                                 if (it == null) {
                                     result.invoke(UiState.Error("Failed to store local session"))
                                 } else {
@@ -154,8 +156,9 @@ class AuthRepositoryImpl @Inject constructor(
         database.collection(USER).document(id)
             .get().addOnCompleteListener {
                 if (it.isSuccessful) {
-                    val user = it.result?.toObject(User::class.java)
-                    appPreferences.edit().putString(SharedPrefConstants.USER_SESSION, id).apply()
+                    val user = it.result.toObject(User::class.java)
+                    appPreferences.edit()
+                        .putString(SharedPrefConstants.USER_SESSION, gson.toJson(user)).apply()
                     result.invoke(user)
                 } else {
                     result.invoke(null)
@@ -171,8 +174,8 @@ class AuthRepositoryImpl @Inject constructor(
         if (userId == null) {
             result.invoke(null)
         } else {
-//            val user = gson.fromJson(userId, User::class.java)
-            result.invoke(User(id = userId))
+            val user = gson.fromJson(userId, User::class.java)
+            result.invoke(user)
         }
     }
 }

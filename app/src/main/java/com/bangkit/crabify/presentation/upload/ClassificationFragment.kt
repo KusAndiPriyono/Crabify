@@ -25,22 +25,30 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.bangkit.crabify.R
-import com.bangkit.crabify.databinding.FragmentUploadBinding
+import com.bangkit.crabify.data.model.Crab
+import com.bangkit.crabify.databinding.FragmentClassificationBinding
 import com.bangkit.crabify.ml.CompressedModelWithMetadataV2
+import com.bangkit.crabify.presentation.auth.login.LoginViewModel
 import com.bangkit.crabify.presentation.notification.NotificationActivity
+import com.bangkit.crabify.utils.UiState
 import com.bangkit.crabify.utils.rotateFile
 import com.bangkit.crabify.utils.uriToFile
 import dagger.hilt.android.AndroidEntryPoint
 import org.tensorflow.lite.support.image.TensorImage
 import java.io.File
+import java.text.NumberFormat
 
 @AndroidEntryPoint
-class UploadFragment : Fragment() {
+class ClassificationFragment : Fragment() {
     private var getFile: File? = null
-    private var _binding: FragmentUploadBinding? = null
+    private var _binding: FragmentClassificationBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: ClassificationViewModel by viewModels()
+    private val authViewModel: LoginViewModel by viewModels()
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -49,10 +57,9 @@ class UploadFragment : Fragment() {
         }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentUploadBinding.inflate(inflater, container, false)
+        _binding = FragmentClassificationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -74,7 +81,16 @@ class UploadFragment : Fragment() {
                     requireContext().contentResolver.openInputStream(uri)
                 )
             )
-            binding.ivPickFile.setImageBitmap(result)
+            binding.ivResult.setImageBitmap(result)
+        }
+
+        binding.btnGenerate.setOnClickListener {
+            if (getFile != null) {
+                val bitmap = BitmapFactory.decodeFile(getFile?.absolutePath)
+                outputGenerator(bitmap)
+            } else {
+                binding.tvOutput.text = "Silahkan pilih gambar terlebih dahulu"
+            }
         }
 
         binding.openFile.setOnClickListener {
@@ -85,8 +101,7 @@ class UploadFragment : Fragment() {
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            requireContext(),
-            it
+            requireContext(), it
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -107,8 +122,7 @@ class UploadFragment : Fragment() {
                 selectedImg.let { uri ->
                     val myFile = uriToFile(uri, requireContext())
                     getFile = myFile
-                    binding.ivPickFile.setImageURI(uri)
-                    outputGenerator(BitmapFactory.decodeFile(myFile.path))
+                    binding.ivResult.setImageURI(uri)
                 }
             } else {
                 Log.e("TAG", "Gallery selection canceled")
@@ -123,44 +137,83 @@ class UploadFragment : Fragment() {
         val tfImage = TensorImage.fromBitmap(newImage)
 
         // Runs model inference and gets result.
-        val outputs = crabifyModel.process(tfImage)
-            .probabilityAsCategoryList.apply {
-                sortByDescending { it.score }
-            }
-        val highProbabilityOutput = outputs[0]
-
-//        val expectedLabel = "Kepiting Soka"
-//        val resultText = if (highProbabilityOutput.label != expectedLabel) {
-//            "Kepiting Biasa"
-//        } else {
-//            "${highProbabilityOutput.label}\nScore: ${highProbabilityOutput.score}"
-//        }
-
-        val resultText =
-            "${highProbabilityOutput.label}\nScore: ${(highProbabilityOutput.score * 100).toInt()}%"
-        binding.tvOutput.text = resultText
-        Log.d(
-            "TAG",
-            "outputGenerator: ${highProbabilityOutput.label} ${highProbabilityOutput.score}"
-        )
-
-        if (highProbabilityOutput.score >= 0.80) {
-            showNotification()
+        val outputs = crabifyModel.process(tfImage).probabilityAsCategoryList.apply {
+            sortByDescending { it.score }
         }
+
+        val validCategories = outputs.filter {
+            it.label == "kepiting soka" || it.label == "kepiting biasa"
+        }
+
+        if (validCategories.isNotEmpty()) {
+            val highProbabilityOutput = validCategories[0]
+            val resultText =
+                "${highProbabilityOutput.label}\nScore: " + NumberFormat.getPercentInstance()
+                    .format(highProbabilityOutput.score)
+            binding.tvOutput.text = resultText
+            if (highProbabilityOutput.score >= 0.70) {
+                viewModel.uploadSingleFile(Uri.fromFile(getFile)) { result ->
+                    when (result) {
+                        is UiState.Loading -> {
+                            Log.d("TAG", "outputGenerator: Loading")
+                        }
+
+                        is UiState.Success -> {
+                            val uploadUri = result.data
+                            val user_id = getSession()
+                            Log.d("TAG", "outputGenerator: ${result.data}")
+                            val crab = createCrab(
+                                highProbabilityOutput.label,
+                                highProbabilityOutput.score * 100.toFloat(),
+                                uploadUri.toString(),
+                                user_id
+                            )
+                            viewModel.addCrab(crab)
+                        }
+
+                        is UiState.Error -> {
+                            Log.d("TAG", "outputGenerator: ${result.message}")
+                        }
+                    }
+                }
+                showNotification()
+            }
+        } else {
+            binding.tvOutput.text = "Tidak ada hasil"
+        }
+    }
+
+    private fun getSession(): String {
+        var user_id = ""
+        authViewModel.getSession {
+            it?.let { user ->
+                user_id = user.id
+            }
+        }
+        return user_id
+    }
+
+    private fun createCrab(label: String, score: Float, imageUri: String, user_id: String): Crab {
+        val crab = Crab(
+            label = arrayListOf(label),
+            score = arrayListOf(score),
+            image = imageUri,
+            user_id = user_id
+        )
+        Log.d("TAG", "createCrab: $crab")
+        return crab
     }
 
     @SuppressLint("WrongConstant")
     private fun showNotification() {
         if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.VIBRATE
+                requireContext(), Manifest.permission.VIBRATE
             ) == PackageManager.PERMISSION_GRANTED
         ) {
 
 //            val channelId = "your_notification_channel_id"
             val notificationBuilder = NotificationCompat.Builder(requireContext(), channelId)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Kepiting sudah molting")
+                .setSmallIcon(R.drawable.ic_notification).setContentTitle("Kepiting sudah molting")
                 .setContentText("The score is greater than or equal to 0.80!")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
@@ -176,20 +229,6 @@ class UploadFragment : Fragment() {
 
             notificationBuilder.setContentIntent(pendingIntent)
             notificationBuilder.setAutoCancel(true)
-
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                val name = "Notification Channel"
-//                val descriptionText = "Channel for notifications"
-//                val importance = NotificationManagerCompat.IMPORTANCE_DEFAULT
-//                val channel = NotificationChannel(channelId, name, importance).apply {
-//                    description = descriptionText
-//                    setAllowBubbles(true)
-//                }
-//
-//                val notificationManager =
-//                    requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//                notificationManager.createNotificationChannel(channel)
-//            }
 
             with(NotificationManagerCompat.from(requireContext())) {
                 notify(notificationId, notificationBuilder.build())

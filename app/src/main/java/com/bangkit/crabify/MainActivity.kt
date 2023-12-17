@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +42,12 @@ class MainActivity : AppCompatActivity() {
                 zoomY.duration = 500
                 zoomX.doOnEnd {
                     screen.remove()
-                    checkSession()
+//                    checkSession()
                 }
                 zoomX.start()
                 zoomY.doOnEnd {
                     screen.remove()
-                    checkSession()
+//                    checkSession()
                 }
                 zoomY.start()
             }
@@ -55,13 +55,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    private fun checkSession() {
+
+    override fun onStart() {
+        super.onStart()
         viewModel.getSession { user ->
             if (user != null) {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.action_onBoardingFragment_to_homeActivity)
-//                val intent = Intent(this, HomeActivity::class.java)
-//                startActivity(intent)
-//                finish()
             } else {
                 findNavController(R.id.nav_host_fragment)
             }

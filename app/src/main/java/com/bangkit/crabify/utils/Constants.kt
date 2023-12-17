@@ -3,6 +3,7 @@ package com.bangkit.crabify.utils
 object FirebaseStorageConstants {
     const val USER_SETTINGS = "user_settings"
     const val APP_ENTRY = "app_entry"
+    const val CRAB_IMAGE = "crab"
 }
 
 object FirebaseRequest {
@@ -12,7 +13,15 @@ object FirebaseRequest {
 }
 
 object FireStoreCollections {
-    const val USER = "users"
+    const val USER = "user"
+    const val CRAB = "crab"
+}
+
+object FireStoreDocumentField {
+    const val DATE = "date"
+    const val USER_ID = "user_id"
+    const val LABEL = "label"
+
 }
 
 object SharedPrefConstants {

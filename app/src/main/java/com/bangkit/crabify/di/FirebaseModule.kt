@@ -2,6 +2,7 @@ package com.bangkit.crabify.di
 
 import com.bangkit.crabify.utils.FirebaseStorageConstants
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -25,6 +26,12 @@ object FirebaseModule {
     @Provides
     fun provideFirebaseFireStore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseDatabase(): FirebaseDatabase {
+        return FirebaseDatabase.getInstance()
     }
 
 //    @Singleton
@@ -64,6 +71,4 @@ object FirebaseModule {
     fun provideFirebaseStorage(): StorageReference {
         return FirebaseStorage.getInstance().getReference(FirebaseStorageConstants.APP_ENTRY)
     }
-
-
 }

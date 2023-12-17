@@ -1,0 +1,39 @@
+{
+  "error": false,
+  "message": "success",
+  "count": 4,
+  "sensordatavalues": [
+    {
+      "id": 1,
+      "name": "Temperature",
+      "value": "21.00",
+      "value_type": "float",
+      "unit": "°C",
+      "image": "https://www.svgrepo.com/show/475590/temperature.svg"
+    },
+    {
+      "id": 2,
+      "name": "pH",
+      "value": "7.00",
+      "value_type": "float",
+      "unit": "pH",
+      "image": "https://www.svgrepo.com/show/231588/ph-meter-lab.svg"
+    },
+    {
+      "id": 3,
+      "name": "EC",
+      "value": "0.00",
+      "value_type": "float",
+      "unit": "µS/cm",
+      "image": "https://www.svgrepo.com/show/525194/water.svg"
+    },
+    {
+      "id": 4,
+      "name": "Salinitas",
+      "value": "0.00",
+      "value_type": "float",
+      "unit": "ppt",
+      "image": "https://www.svgrepo.com/show/525194/water.svg"
+    }
+  ]
+}

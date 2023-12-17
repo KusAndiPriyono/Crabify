@@ -9,12 +9,16 @@
         android:id="@+id/homeFragment"
         android:name="com.bangkit.crabify.presentation.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_crabListFragment"
+            app:destination="@id/crabListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/uploadFragment"
-        android:name="com.bangkit.crabify.presentation.upload.UploadFragment"
+        android:name="com.bangkit.crabify.presentation.upload.ClassificationFragment"
         android:label="fragment_upload"
-        tools:layout="@layout/fragment_upload">
+        tools:layout="@layout/fragment_classification">
         <action
             android:id="@+id/action_uploadFragment_to_cameraFragment"
             app:destination="@id/cameraFragment" />
@@ -42,5 +46,10 @@
         android:name="com.bangkit.crabify.presentation.auth.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/crabListFragment"
+        android:name="com.bangkit.crabify.presentation.list.CrabListFragment"
+        android:label="fragment_crab_list"
+        tools:layout="@layout/fragment_crab_list" />
 
 </navigation>
