@@ -13,6 +13,10 @@ import com.bangkit.crabify.databinding.FragmentHomeBinding
 import com.bangkit.crabify.presentation.auth.login.LoginViewModel
 import com.bangkit.crabify.utils.UiState
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -36,6 +40,19 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val greetingMessage = when (LocalTime.now()) {
+            in LocalTime.parse("05:00:00")..LocalTime.parse("11:59:59") -> "Selamat Pagi,"
+            in LocalTime.parse("12:00:00")..LocalTime.parse("16:59:59") -> "Selamat Siang,"
+            in LocalTime.parse("17:00:00")..LocalTime.parse("20:59:59") -> "Selamat Sore,"
+            else -> "Selamat malam"
+        }
+        binding.tvWelcome.text = greetingMessage
+
+        val currentTimeMillis = System.currentTimeMillis()
+        val dateFormat = SimpleDateFormat("EEE dd-MM-yyyy", Locale.getDefault())
+        val formattedDate = dateFormat.format(Date(currentTimeMillis))
+        binding.tvDate.text = formattedDate
+
         observeSensorList()
 
         binding.ivList.setOnClickListener {
@@ -46,9 +63,11 @@ class HomeFragment : Fragment() {
 
         val gridLayoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvSensor.layoutManager = gridLayoutManager
-
-        authViewModel.getSession { uid ->
-            sensorViewModel.getSensorData(uid)
+        authViewModel.getSession { user ->
+            user?.let {
+                binding.tvName.text = user.fullName
+                sensorViewModel.getSensorData(user)
+            }
         }
     }
 
@@ -68,8 +87,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//    }
 }

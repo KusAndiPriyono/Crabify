@@ -62,4 +62,5 @@
     <string name="schedule">Schedule</string>
     <string name="label">Label :</string>
     <string name="score">Score :</string>
+    <string name="name">Name</string>
 </resources>

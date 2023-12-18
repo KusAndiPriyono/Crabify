@@ -38,6 +38,13 @@ class SettingsFragment : Fragment() {
                 requireActivity().finish()
             }
         }
+
+        viewModel.getSession { user ->
+            user?.let {
+                binding.tvUsername.text = it.fullName
+                binding.tvEmail.text = it.email
+            }
+        }
     }
 
     override fun onDestroyView() {

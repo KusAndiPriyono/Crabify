@@ -26,6 +26,7 @@ import com.bangkit.crabify.R
 import com.bangkit.crabify.data.model.Crab
 import com.bangkit.crabify.databinding.FragmentCameraBinding
 import com.bangkit.crabify.ml.CompressedModelWithMetadataV2
+import com.bangkit.crabify.presentation.auth.login.LoginViewModel
 import com.bangkit.crabify.presentation.notification.NotificationActivity
 import com.bangkit.crabify.presentation.upload.ClassificationFragment
 import com.bangkit.crabify.presentation.upload.ClassificationFragment.Companion.channelId
@@ -50,6 +51,8 @@ class CameraFragment : Fragment() {
     private lateinit var imageClassifierHelper: ImageClassifierHelper
     private var imageUri: Uri? = null
 
+    private val authViewModel: LoginViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,6 +68,7 @@ class CameraFragment : Fragment() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         imageClassifier = CompressedModelWithMetadataV2.newInstance(requireContext())
         startCamera()
+
     }
 
     private fun startCamera() {
@@ -90,9 +94,13 @@ class CameraFragment : Fragment() {
                                     it[0].categories.sortedByDescending { it?.score }
                                 val highestProbability = sortedCategories[0]
                                 if (highestProbability.label == "kepiting soka" && highestProbability.score >= 0.80) {
-                                    val crab = Crab(
-                                        label = arrayListOf(highestProbability.label),
-                                        score = arrayListOf(highestProbability.score),
+                                    val imageUri = Uri.parse(imageUri.toString())
+                                    val user_id = getSession()
+                                    val crab = createCrab(
+                                        highestProbability.label,
+                                        highestProbability.score * 100.toFloat(),
+                                        imageUri.toString(),
+                                        user_id
                                     )
                                     classificationViewModel.addCrab(crab)
                                     showNotification()
@@ -151,6 +159,27 @@ class CameraFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    private fun getSession(): String {
+        var user_id = ""
+        authViewModel.getSession {
+            it?.let { user ->
+                user_id = user.id
+            }
+        }
+        return user_id
+    }
+
+    private fun createCrab(
+        label: String, score: Float, imageUri: String, user_id: String
+    ): Crab {
+        return Crab(
+            label = arrayListOf(label),
+            score = arrayListOf(score),
+            image = imageUri,
+            user_id = user_id
+        )
+    }
+
     @SuppressLint("WrongConstant")
     private fun showNotification() {
         if (ContextCompat.checkSelfPermission(
@@ -192,7 +221,7 @@ class CameraFragment : Fragment() {
         _binding = null
         cameraExecutor.shutdown()
     }
-    
+
     companion object {
         private const val TAG = "CameraFragment"
     }

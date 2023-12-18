@@ -50,6 +50,10 @@
         android:id="@+id/crabListFragment"
         android:name="com.bangkit.crabify.presentation.list.CrabListFragment"
         android:label="fragment_crab_list"
-        tools:layout="@layout/fragment_crab_list" />
+        tools:layout="@layout/fragment_crab_list" >
+        <action
+            android:id="@+id/action_crabListFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 
 </navigation>

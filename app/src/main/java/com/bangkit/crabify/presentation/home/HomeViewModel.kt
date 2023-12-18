@@ -1,6 +1,5 @@
 package com.bangkit.crabify.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bangkit.crabify.data.model.SensorDataValue
@@ -22,7 +21,6 @@ class HomeViewModel @Inject constructor(private val sensorRepository: SensorRepo
         _sensor.value = UiState.Loading
         sensorRepository.getSensorData(user) {
             _sensor.value = it
-            Log.d("Sensor", it.toString())
         }
     }
 }

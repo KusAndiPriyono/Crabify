@@ -12,6 +12,7 @@ data class Crab(
     val label: MutableList<String> = arrayListOf(),
     val score: MutableList<Float> = arrayListOf(),
     val image: String = "",
+    val additionalData: String = "",
     @ServerTimestamp
     val date: Date = Date(),
 ) : Parcelable
