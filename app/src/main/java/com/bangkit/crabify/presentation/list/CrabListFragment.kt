@@ -75,6 +75,4 @@ class CrabListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

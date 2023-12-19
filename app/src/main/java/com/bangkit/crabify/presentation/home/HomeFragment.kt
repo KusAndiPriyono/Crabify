@@ -54,10 +54,8 @@ class HomeFragment : Fragment() {
         binding.tvDate.text = formattedDate
 
         observeSensorList()
-
-        binding.ivList.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_crabListFragment)
-        }
+        startSensorList()
+        startAnalysis()
 
         binding.rvSensor.adapter = adapter
 
@@ -68,6 +66,18 @@ class HomeFragment : Fragment() {
                 binding.tvName.text = user.fullName
                 sensorViewModel.getSensorData(user)
             }
+        }
+    }
+
+    private fun startAnalysis() {
+        binding.ivAnalytics.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_home_to_navigation_analisis)
+        }
+    }
+
+    private fun startSensorList() {
+        binding.ivList.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_home_to_navigation_crab_list)
         }
     }
 
@@ -86,9 +96,4 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        _binding = null
-//    }
 }

@@ -3,57 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/navigation_home">
 
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/navigation_home"
         android:name="com.bangkit.crabify.presentation.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_crabListFragment"
-            app:destination="@id/crabListFragment" />
+            android:id="@+id/action_navigation_home_to_navigation_crab_list"
+            app:destination="@id/navigation_crab_list" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_analisis"
+            app:destination="@id/navigation_analisis" />
     </fragment>
     <fragment
-        android:id="@+id/uploadFragment"
+        android:id="@+id/navigation_classification"
         android:name="com.bangkit.crabify.presentation.upload.ClassificationFragment"
         android:label="fragment_upload"
-        tools:layout="@layout/fragment_classification">
-        <action
-            android:id="@+id/action_uploadFragment_to_cameraFragment"
-            app:destination="@id/cameraFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_classification" />
     <fragment
-        android:id="@+id/cameraFragment"
+        android:id="@+id/navigation_camera"
         android:name="com.bangkit.crabify.presentation.camera.CameraFragment"
         android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera">
-        <action
-            android:id="@+id/action_cameraFragment_to_uploadFragment"
-            app:destination="@id/uploadFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_camera" />
     <fragment
-        android:id="@+id/settingsFragment"
+        android:id="@+id/navigation_settings"
         android:name="com.bangkit.crabify.presentation.settings.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings">
-        <action
-            android:id="@+id/action_settingsFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_settings" />
     <fragment
-        android:id="@+id/loginFragment"
+        android:id="@+id/navigation_login"
         android:name="com.bangkit.crabify.presentation.auth.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
     <fragment
-        android:id="@+id/crabListFragment"
+        android:id="@+id/navigation_crab_list"
         android:name="com.bangkit.crabify.presentation.list.CrabListFragment"
         android:label="fragment_crab_list"
-        tools:layout="@layout/fragment_crab_list" >
-        <action
-            android:id="@+id/action_crabListFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_crab_list" />
+    <fragment
+        android:id="@+id/navigation_analisis"
+        android:name="com.bangkit.crabify.presentation.analisis.AnalisisFragment"
+        android:label="fragment_analisis"
+        tools:layout="@layout/fragment_analisis" />
 
 </navigation>

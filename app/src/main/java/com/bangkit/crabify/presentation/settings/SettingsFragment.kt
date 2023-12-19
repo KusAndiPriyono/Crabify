@@ -34,7 +34,7 @@ class SettingsFragment : Fragment() {
             viewModel.logout {
                 requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility =
                     View.GONE
-                findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
+                findNavController().navigate(R.id.loginFragment)
                 requireActivity().finish()
             }
         }

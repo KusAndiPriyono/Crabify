@@ -96,7 +96,7 @@ class ClassificationFragment : Fragment() {
         binding.openFile.setOnClickListener {
             startGallery()
         }
-        binding.openCamera.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.cameraFragment))
+        binding.openCamera.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.navigation_camera))
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

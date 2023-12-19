@@ -174,19 +174,6 @@ class LoginFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.getSession { user ->
-            if (user != null) {
-                val action = LoginFragmentDirections.actionLoginFragmentToHomeActivity()
-                findNavController().navigate(action)
-            }
-        }
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
-    }
-
-
     companion object {
         private const val TAG = "LoginFragment"
     }

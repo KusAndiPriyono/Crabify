@@ -1,15 +1,10 @@
 package com.bangkit.crabify.presentation.home
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.bangkit.crabify.R
@@ -33,14 +28,35 @@ class HomeActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_activity_main_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        val bottomNav = binding.bottomNavigationView
-        bottomNav.setupWithNavController(navController)
+        binding.bottomNavigationView.setupWithNavController(navController)
+
+        binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.navigation_home -> {
+                    navController.navigate(R.id.navigation_home)
+                    true
+                }
+
+                R.id.navigation_classification -> {
+                    navController.navigate(R.id.navigation_classification)
+                    true
+                }
+
+                R.id.navigation_settings -> {
+                    navController.navigate(R.id.navigation_settings)
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     fun onNotificationIconClick(view: View) {
         val intent = Intent(this, NotificationActivity::class.java)
         startActivity(intent)
     }
+
 }
 
 

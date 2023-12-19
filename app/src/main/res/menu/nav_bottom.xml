@@ -3,26 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/homeFragment"
+        android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
         android:title="@string/home"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
 
     <item
-        android:id="@+id/uploadFragment"
+        android:id="@+id/navigation_classification"
         android:icon="@drawable/ic_upload"
         android:title="@string/classification"
         app:showAsAction="always" />
 
-    <!--    <item-->
-    <!--        android:id="@+id/cameraFragment"-->
-    <!--        android:icon="@drawable/ic_camera"-->
-    <!--        android:title="@string/camera"-->
-    <!--        app:showAsAction="always" />-->
-
     <item
-        android:id="@+id/settingsFragment"
+        android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/settings"
         app:showAsAction="always" />

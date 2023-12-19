@@ -1,5 +1,6 @@
 package com.bangkit.crabify.presentation.home
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -22,8 +23,10 @@ class SensorListAdapter : RecyclerView.Adapter<SensorListAdapter.ViewHolder>() {
         holder.bind(item)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(list: MutableList<SensorDataValue>) {
         this.list = list
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(val binding: SensorItemBinding) : RecyclerView.ViewHolder(binding.root) {

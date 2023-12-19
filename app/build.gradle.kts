@@ -82,8 +82,8 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.48")
 
     implementation("androidx.hilt:hilt-navigation-fragment:1.1.0")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     kapt("androidx.hilt:hilt-compiler:1.1.0")
 
     //Data Store
@@ -113,6 +113,9 @@ dependencies {
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    // Pie Chart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 
 }

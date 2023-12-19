@@ -42,12 +42,10 @@ class MainActivity : AppCompatActivity() {
                 zoomY.duration = 500
                 zoomX.doOnEnd {
                     screen.remove()
-//                    checkSession()
                 }
                 zoomX.start()
                 zoomY.doOnEnd {
                     screen.remove()
-//                    checkSession()
                 }
                 zoomY.start()
             }
@@ -55,12 +53,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-
     override fun onStart() {
         super.onStart()
         viewModel.getSession { user ->
             if (user != null) {
-                findNavController(R.id.nav_host_fragment).navigate(R.id.action_onBoardingFragment_to_homeActivity)
+                findNavController(R.id.nav_host_fragment).navigate(R.id.homeActivity)
             } else {
                 findNavController(R.id.nav_host_fragment)
             }

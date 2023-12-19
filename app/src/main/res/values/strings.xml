@@ -63,4 +63,9 @@
     <string name="label">Label :</string>
     <string name="score">Score :</string>
     <string name="name">Name</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="analisis">Analisis Crab</string>
+    <string name="crab_soka">Kepiting Soka</string>
+    <string name="crab_biasa">Kepiting Biasa</string>
 </resources>
